@@ -92,7 +92,7 @@ docker run --env-file .env fastapi_app celery -A app.core.celery_worker.celery_a
 ## Project Structure
 
 - \`app/\` — FastAPI application source code
-- - \`app/api/routers/\` — FastAPI routers
+- \`app/api/routers/\` — FastAPI routers
 - \`app/core/\` — Core logic, including Celery worker and auth
 - \`app/db/\` — Database models and session management
 - \`app/repositories/\` — Database repository classes
