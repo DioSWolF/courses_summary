@@ -27,7 +27,7 @@ This repository contains a FastAPI application with Celery workers for asynchron
 
 ```bash
 git clone https://github.com/DioSWolF/courses_summary.git
-cd your-repo-name
+cd courses_summary
 ```
 
 ### Environment Variables
