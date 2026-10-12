@@ -11,6 +11,7 @@
   --ply:#E8D9BF; --ply-2:#DCC9A8; --ink:#1E1D1B; --muted:#6b6257;
   --orange:#FF5A36; --teal:#2BB3A3; --yellow:#FFC23D; --violet:#7B5CFF; --pink:#FF7FB0;
   --card:#FFF8EC;
+  --h-black:#2b2a28; --h-white:#ECEAE2; --h-blue:#2F6FDE; --h-lime:#9BC53D; --h-red:#D7263D; --h-wood:#C68B59;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -38,18 +39,24 @@ h1,h2,h3{font-family:"Unbounded",sans-serif;margin:0;line-height:1.05}
 
 /* ---------- holds (buttons) ---------- */
 .hold{position:relative;border:0;background:none;padding:0;font:inherit;color:var(--ink);
-  display:inline-grid;place-items:center;min-width:120px;min-height:64px;isolation:isolate}
-.hold svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible;
-  transition:transform .35s cubic-bezier(.3,1.6,.5,1);transform-origin:50% 50%}
-.shape{fill:var(--c,var(--orange));stroke:rgba(0,0,0,.25);stroke-width:2}
-.bolt{fill:#2a2622}
-.bolt-ring{fill:none;stroke:rgba(255,255,255,.55);stroke-width:2}
-.hold span{font-weight:600;padding:0 34px 0 18px;font-size:.95rem;text-shadow:0 1px 0 rgba(255,255,255,.35)}
-.hold:hover svg,.hold:focus-visible svg{transform:rotate(-6deg) scale(1.05)}
-.hold:active svg{transform:scale(.9) rotate(4deg)}
-.hold:focus-visible{outline:3px dashed var(--ink);outline-offset:6px;border-radius:30px}
-.hold.small{min-width:84px;min-height:50px}
-.hold.small span{font-size:.85rem;padding:0 28px 0 12px}
+  display:inline-grid;place-items:center;min-width:136px;min-height:74px;isolation:isolate;--rot:0deg}
+.hold>svg{position:absolute;inset:-4px -6px;width:calc(100% + 12px);height:calc(100% + 8px);z-index:-1;overflow:visible;
+  transform:rotate(var(--rot));transform-origin:var(--bx,80%) var(--by,50%);
+  transition:transform .45s cubic-bezier(.3,1.7,.45,1)}
+.hold:hover>svg,.hold:focus-visible>svg{transform:rotate(calc(var(--rot) + 7deg))}
+.hold:active>svg{transform:rotate(calc(var(--rot) - 3deg)) scale(.94)}
+/* hex-socket bolt with washer — not stretched with the shape */
+.hold .bolt{position:absolute;left:var(--bx,80%);top:var(--by,50%);width:15px;height:15px;margin:-7.5px 0 0 -7.5px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#f4f4f0,#9a9a94 45%,#4a4a46 80%);box-shadow:0 1px 2px rgba(0,0,0,.6),0 0 0 2px rgba(0,0,0,.15);pointer-events:none}
+.hold .bolt::after{content:"";position:absolute;inset:4px;background:#1b1b1a;
+  clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%)}
+/* label = a strip of masking tape with marker writing, like route tags in a gym */
+.hold>span{position:relative;font-weight:600;font-size:.9rem;padding:3px 12px 4px;background:rgba(246,239,220,.93);color:#2b2722;
+  transform:rotate(var(--tr,-2deg)) translate(var(--tx,0),var(--ty,0));z-index:1;box-shadow:0 1px 2px rgba(0,0,0,.25);white-space:nowrap;
+  clip-path:polygon(0 8%,3% 0,97% 4%,100% 0,99% 50%,100% 100%,96% 94%,4% 100%,0 92%,1% 50%)}
+.hold:focus-visible{outline:3px dashed var(--ink);outline-offset:8px;border-radius:30px}
+.hold.small{min-width:100px;min-height:56px}
+.hold.small>span{font-size:.8rem;padding:2px 9px 3px}
 
 /* ---------- header ---------- */
 header{position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:rgba(232,217,191,.75);
@@ -76,9 +83,7 @@ nav{display:flex;gap:4px;flex-wrap:wrap}
 .hero .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 .hero .hand-note{color:var(--yellow);position:absolute;right:52px;top:90px;transform:rotate(6deg)}
 .hero-holds{position:absolute;inset:0;pointer-events:none}
-.hero-holds i{position:absolute;width:56px;height:40px;border-radius:48% 52% 40% 60%/55% 45% 55% 45%;
-  background:var(--c);opacity:.85;animation:bob 6s ease-in-out infinite;box-shadow:inset -6px -6px 0 rgba(0,0,0,.2)}
-@keyframes bob{50%{transform:translateY(-10px) rotate(8deg)}}
+.hero-holds .hold{position:absolute;min-width:0;min-height:0;opacity:.95}
 
 /* ---------- rope & climber ---------- */
 #rope{position:fixed;right:18px;top:90px;bottom:20px;width:4px;z-index:40;
@@ -104,6 +109,11 @@ section{padding:80px 0}
 .slot.full .hold{opacity:.4;filter:grayscale(.6)}
 .slot.mine .hold::after{content:"";position:absolute;right:6px;top:-6px;width:12px;height:30px;
   background:var(--violet);border-radius:3px;transform:rotate(18deg)}
+.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:30px 18px}
+.lib figure{margin:0;display:grid;justify-items:center;gap:10px;text-align:center}
+.lib .hold{width:100%;min-height:92px}
+.lib figcaption b{display:block;font-family:Unbounded;font-size:.85rem}
+.lib figcaption small{color:var(--muted);font-size:.8rem}
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-size:.9rem}
 .legend b{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px}
 
@@ -161,11 +171,39 @@ body.calm .hero-holds,body.calm #rope{display:none}
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <symbol id="h-jug" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M14 52C6 24 40 6 96 8s96 8 90 40-40 38-92 36S20 78 14 52Z"/><circle class="bolt" cx="170" cy="44" r="7"/><circle class="bolt-ring" cx="170" cy="44" r="11"/></symbol>
-    <symbol id="h-crimp" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M6 60C10 34 60 22 110 20s88 4 84 30-36 32-96 32S2 84 6 60Z"/><circle class="bolt" cx="170" cy="50" r="7"/><circle class="bolt-ring" cx="170" cy="50" r="11"/></symbol>
-    <symbol id="h-sloper" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M20 70C-6 50 30 4 100 6c68 2 104 40 82 62s-60 20-90 18-58 2-72-16Z"/><circle class="bolt" cx="170" cy="40" r="7"/><circle class="bolt-ring" cx="170" cy="40" r="11"/></symbol>
-    <symbol id="h-pinch" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M10 44C10 14 52 10 76 22s30 8 56-4 60-2 60 26-30 40-62 32-28-6-58 4S10 74 10 44Z"/><circle class="bolt" cx="170" cy="46" r="7"/><circle class="bolt-ring" cx="170" cy="46" r="11"/></symbol>
+  <defs id="holdDefs">
+    <radialGradient id="g-shade" cx=".36" cy=".28" r=".85">
+      <stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".75" stop-color="#000" stop-opacity=".12"/><stop offset="1" stop-color="#000" stop-opacity=".42"/>
+    </radialGradient>
+    <radialGradient id="g-hole" cx=".5" cy=".35" r=".7">
+      <stop offset="0" stop-color="#000" stop-opacity=".9"/><stop offset=".7" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity=".15"/>
+    </radialGradient>
+    <linearGradient id="g-face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity=".25"/>
+    </linearGradient>
+    <filter id="f-cast" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="3.2"/></filter>
+    <filter id="f-soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="f-grit" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="7" result="n"/>
+      <feColorMatrix in="n" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  4 0 0 0 -2.1"/>
+      <feComposite in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="f-gritL" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="21" result="n"/>
+      <feColorMatrix in="n" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  4 0 0 0 -2.3"/>
+      <feComposite in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="f-wood" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.22" numOctaves="3" seed="4" result="n"/>
+      <feColorMatrix in="n" values="0 0 0 0 .28  0 0 0 0 .16  0 0 0 0 .07  0 3.2 0 0 -1.35"/>
+      <feComposite in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="f-chalk" x="-40%" y="-40%" width="180%" height="180%">
+      <feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" result="d"/>
+      <feGaussianBlur in="d" stdDeviation="1.6"/>
+    </filter>
   </defs>
 </svg>
 
@@ -183,8 +221,8 @@ body.calm .hero-holds,body.calm #rope{display:none}
     <nav aria-label="Главное меню">
       <button class="hold small" style="--c:var(--yellow)" data-go="#schedule"><svg><use href="#h-jug"/></svg><span>Расписание</span></button>
       <button class="hold small" style="--c:var(--teal)" data-go="#locations"><svg><use href="#h-pinch"/></svg><span>Локации</span></button>
-      <button class="hold small" style="--c:var(--pink)" data-go="#news"><svg><use href="#h-crimp"/></svg><span>Новости</span></button>
-      <button class="hold small" style="--c:var(--violet)" data-go="#gallery"><svg><use href="#h-sloper"/></svg><span>Галерея</span></button>
+      <button class="hold small" style="--c:var(--pink)" data-go="#news"><svg><use href="#h-wave"/></svg><span>Новости</span></button>
+      <button class="hold small" style="--c:var(--violet)" data-go="#gallery"><svg><use href="#h-pocket"/></svg><span>Галерея</span></button>
       <button class="hold small keep" style="--c:var(--orange)" id="calmBtn" aria-pressed="false"><svg><use href="#h-sloper"/></svg><span>Спокойно</span></button>
     </nav>
   </div>
@@ -194,17 +232,21 @@ body.calm .hero-holds,body.calm #rope{display:none}
   <div class="hero-bg" id="heroBg"></div>
   <div class="hero-tint"></div>
   <div class="grain"></div>
-  <div class="hero-holds">
-    <i style="--c:var(--orange);left:8%;top:18%"></i><i style="--c:var(--teal);left:72%;top:30%;animation-delay:-2s"></i>
-    <i style="--c:var(--yellow);left:56%;top:12%;animation-delay:-4s"></i><i style="--c:var(--pink);left:86%;top:62%;animation-delay:-1s"></i>
+  <div class="hero-holds" aria-hidden="true">
+    <div class="hold" style="--c:var(--orange);left:6%;top:14%;width:120px;height:80px"><svg><use href="#h-jug"/></svg></div>
+    <div class="hold" style="--c:var(--teal);left:70%;top:26%;width:150px;height:96px"><svg><use href="#h-sloper"/></svg></div>
+    <div class="hold" style="--c:var(--yellow);left:52%;top:9%;width:90px;height:52px"><svg><use href="#h-crimp"/></svg></div>
+    <div class="hold" style="--c:var(--pink);left:84%;top:58%;width:110px;height:70px"><svg><use href="#h-pinch"/></svg></div>
+    <div class="hold" data-mat="wood" style="left:34%;top:4%;width:140px;height:60px"><svg><use href="#h-edge"/></svg></div>
+    <div class="hold" style="--c:var(--violet);left:88%;top:8%;width:120px;height:110px"><svg><use href="#h-volume"/></svg></div>
   </div>
   <span class="hand-note">↓ лезь ниже</span>
   <div class="wrap hero-in">
     <h1>Каждый ребёнок может <em>достать</em> до верха</h1>
     <p>Скалолазание для детей 4–14 лет, в том числе с особенностями развития. Маленькие группы, внимательные тренеры, спокойный темп.</p>
     <div class="actions">
-      <button class="hold" style="--c:var(--yellow)" data-go="#schedule"><svg><use href="#h-jug"/></svg><span>Забронировать место</span></button>
-      <label class="hold" style="--c:var(--teal)"><svg><use href="#h-pinch"/></svg><span>Своё фото на фон</span>
+      <button class="hold" style="--c:var(--yellow)" data-go="#schedule"><svg><use href="#h-volume"/></svg><span>Забронировать место</span></button>
+      <label class="hold" data-mat="wood"><svg><use href="#h-edge"/></svg><span>Своё фото на фон</span>
         <input type="file" accept="image/*" id="bgInput" hidden></label>
     </div>
   </div>
@@ -220,6 +262,13 @@ body.calm .hero-holds,body.calm #rope{display:none}
       <span><b style="background:var(--yellow)"></b>Юниоры (7–14)</span>
       <span>●●○ — следы магнезии = занятые места</span>
     </div>
+  </div>
+</section>
+
+<section id="holds">
+  <div class="wrap">
+    <div class="sec-head"><h2>Зацепки</h2><span class="hand-note">каждая кнопка — настоящая форма</span></div>
+    <div class="lib" id="lib"></div>
   </div>
 </section>
 
@@ -261,13 +310,13 @@ body.calm .hero-holds,body.calm #rope{display:none}
     <h3 id="sheetTitle">Вт, 17:00</h3>
     <p id="sheetSub" style="margin:0;color:var(--muted)"></p>
     <div class="seats">
-      <button class="hold small" style="--c:var(--ply-2)" type="button" id="minus" aria-label="Меньше мест"><svg><use href="#h-crimp"/></svg><span>−</span></button>
+      <button class="hold small" style="--c:var(--h-black)" type="button" id="minus" aria-label="Меньше мест"><svg><use href="#h-foot"/></svg><span style="font-size:1.1rem">−</span></button>
       <output id="seatOut">1</output>
-      <button class="hold small" style="--c:var(--ply-2)" type="button" id="plus" aria-label="Больше мест"><svg><use href="#h-crimp"/></svg><span>+</span></button>
+      <button class="hold small" style="--c:var(--h-black)" type="button" id="plus" aria-label="Больше мест"><svg><use href="#h-foot"/></svg><span style="font-size:1.1rem">+</span></button>
     </div>
     <div class="row">
-      <button class="hold small" style="--c:var(--pink)" value="cancel" id="cancelBooking" hidden><svg><use href="#h-pinch"/></svg><span>Отменить бронь</span></button>
-      <button class="hold small" style="--c:var(--ply-2)" value="close"><svg><use href="#h-sloper"/></svg><span>Закрыть</span></button>
+      <button class="hold small" style="--c:var(--pink)" value="cancel" id="cancelBooking" hidden><svg><use href="#h-sidepull"/></svg><span>Отменить бронь</span></button>
+      <button class="hold small" style="--c:var(--h-white)" value="close"><svg><use href="#h-crimp"/></svg><span>Закрыть</span></button>
       <button class="hold" style="--c:var(--yellow)" value="ok" id="okBtn"><svg><use href="#h-jug"/></svg><span>Забронировать</span></button>
     </div>
   </form>
@@ -277,6 +326,90 @@ body.calm .hero-holds,body.calm #rope{display:none}
 (() => {
   const $ = s => document.querySelector(s);
   const store = { get(k){ try{return localStorage.getItem(k)}catch{return null} }, set(k,v){ try{localStorage.setItem(k,v)}catch{} } };
+
+
+  /* ---- hold engine: realistic SVG holds generated once, reused via <use> ---- */
+  const SHAPES = {
+    jug:{name:'Ведро', note:'глубокий хват, для новичков', bolt:[78,64],
+      d:'M16 60C10 32 44 12 100 12C158 12 192 30 186 58C180 84 142 94 100 92C56 92 22 86 16 60Z',
+      x:'<path d="M42 40C62 26 138 26 160 40C140 52 62 52 42 40Z" fill="#000" opacity=".5"/><path d="M42 40C62 26 138 26 160 40" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>',
+      chalk:'<ellipse cx="100" cy="36" rx="46" ry="9" fill="#fff"/>'},
+    crimp:{name:'Микра', note:'узкая полочка под подушечки', bolt:[82,62],
+      d:'M6 58C12 44 52 34 104 34C156 34 194 40 194 56C194 72 150 80 100 80C52 80 2 74 6 58Z',
+      x:'<path d="M12 50C60 38 150 38 188 48L188 54C150 46 60 46 12 58Z" fill="#000" opacity=".35"/><path d="M14 48C60 38 150 38 186 46" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>',
+      chalk:'<ellipse cx="70" cy="44" rx="40" ry="5" fill="#fff"/>'},
+    sloper:{name:'Сфера', note:'держится трением ладони', bolt:[74,68],
+      d:'M14 74C8 40 50 6 104 6C162 6 196 40 188 72C182 92 150 96 100 96C52 96 18 92 14 74Z',
+      x:'<ellipse cx="78" cy="30" rx="44" ry="14" fill="#fff" opacity=".35" filter="url(#f-soft)"/>',
+      chalk:'<ellipse cx="96" cy="26" rx="58" ry="12" fill="#fff"/>'},
+    pinch:{name:'Щипок', note:'хват большим пальцем с двух сторон', bolt:[50,50],
+      d:'M12 50C12 20 44 14 70 28C88 38 112 38 130 28C158 14 190 22 190 50C190 80 158 88 130 72C112 62 88 62 70 72C44 88 12 80 12 50Z',
+      x:'<path d="M30 50C70 42 130 42 172 50" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="3"/><path d="M30 46C70 38 130 38 172 46" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2"/>',
+      chalk:'<ellipse cx="40" cy="48" rx="18" ry="16" fill="#fff"/><ellipse cx="162" cy="48" rx="18" ry="16" fill="#fff"/>'},
+    pocket:{name:'Карман', note:'дырка на два пальца', bolt:[84,64],
+      d:'M16 54C14 24 56 8 102 10C152 12 190 30 186 58C182 86 146 94 100 92C54 90 18 82 16 54Z',
+      x:'<path d="M64 46C64 30 132 30 132 46C132 62 64 62 64 46Z" fill="url(#g-hole)"/><path d="M64 46C64 62 132 62 132 46" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>',
+      chalk:'<ellipse cx="98" cy="40" rx="42" ry="16" fill="#fff"/>'},
+    edge:{name:'Планка', note:'деревянная кромка, тёплая на ощупь', bolt:[88,58],
+      d:'M8 34L190 30C196 30 198 36 196 42L188 72C186 78 182 80 176 80L22 82C16 82 12 78 10 72L4 42C3 37 4 34 8 34Z',
+      x:'<path d="M8 34L190 30C196 30 198 36 196 42L8 46C4 44 4 36 8 34Z" fill="#fff" opacity=".28"/><path d="M6 46L196 42" stroke="#000" stroke-opacity=".3" stroke-width="2"/>',
+      chalk:'<rect x="30" y="34" width="120" height="8" rx="4" fill="#fff"/>'},
+    volume:{name:'Объём', note:'большая грань, на неё прикручивают другие', bolt:[64,40],
+      d:'M6 86L58 8L150 4L196 78L118 96Z',
+      x:'<path d="M58 8L150 4L118 96Z" fill="#fff" opacity=".22"/><path d="M6 86L58 8L118 96Z" fill="#000" opacity=".12"/><path d="M150 4L196 78L118 96Z" fill="#000" opacity=".3"/><path d="M58 8L118 96M150 4L118 96" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/>',
+      chalk:''},
+    sidepull:{name:'Откидка', note:'тянуть вбок, а не вниз', bolt:[28,72],
+      d:'M10 72C28 22 118 4 190 28C186 40 150 44 112 56C84 66 66 80 52 90C32 100 4 94 10 72Z',
+      x:'<path d="M190 28C150 42 96 52 60 82" fill="none" stroke="#000" stroke-opacity=".4" stroke-width="5"/><path d="M186 26C146 38 96 46 58 76" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>',
+      chalk:'<ellipse cx="130" cy="36" rx="40" ry="8" fill="#fff" transform="rotate(-12 130 36)"/>'},
+    foot:{name:'Зацепка для ног', note:'маленькая, под носок', bolt:[76,58],
+      d:'M34 62C26 38 70 22 104 24C144 26 176 40 170 62C164 82 132 86 102 84C66 82 40 80 34 62Z',
+      x:'<path d="M52 44C80 32 132 32 156 46" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>',
+      chalk:'<ellipse cx="74" cy="72" rx="20" ry="6" fill="#222" opacity=".6"/>'},
+    wave:{name:'Макро-волна', note:'крупная форма с множеством хватов', bolt:[80,66],
+      d:'M8 60C18 28 52 16 82 34C102 46 116 22 142 18C172 14 196 36 190 62C184 88 150 92 110 90C70 88 0 90 8 60Z',
+      x:'<path d="M20 52C40 34 66 30 84 42C104 54 118 30 142 26C164 22 182 34 184 48" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3"/><path d="M24 60C44 44 66 40 84 50C104 62 120 38 142 34C164 30 180 42 184 56" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="3"/>',
+      chalk:'<ellipse cx="60" cy="38" rx="26" ry="8" fill="#fff"/><ellipse cx="150" cy="26" rx="24" ry="7" fill="#fff"/>'},
+  };
+  const defsEl = document.getElementById('holdDefs');
+  defsEl.insertAdjacentHTML('beforeend', Object.entries(SHAPES).map(([k, h]) => `
+    <symbol id="h-${k}" viewBox="0 0 200 100" preserveAspectRatio="none">
+      <path d="${h.d}" transform="translate(5 8)" fill="#000" opacity=".38" filter="url(#f-cast)"/>
+      <path d="${h.d}" style="fill:var(--c,#FF5A36)"/>
+      <path d="${h.d}" style="opacity:var(--grain,0)" filter="url(#f-wood)"/>
+      <path d="${h.d}" fill="url(#g-shade)"/>
+      ${h.x}
+      <path d="${h.d}" opacity=".33" filter="url(#f-grit)"/>
+      <path d="${h.d}" opacity=".25" filter="url(#f-gritL)"/>
+      <g style="opacity:var(--chalk,.5)" filter="url(#f-chalk)">${h.chalk}</g>
+      <path d="${h.d}" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.3" vector-effect="non-scaling-stroke"/>
+    </symbol>`).join(''));
+
+  // stable pseudo-random from a string, so holds keep their tilt across re-renders
+  const rnd = (str, n = 0) => { let h = 2166136261 ^ n; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return ((h >>> 0) % 1000) / 1000; };
+  function dressHold(el, seed){
+    const use = el.querySelector(':scope > svg use'); if (!use) return;
+    const key = use.getAttribute('href').slice(3), h = SHAPES[key]; if (!h) return;
+    seed = seed || el.textContent.trim() + key;
+    el.style.setProperty('--bx', h.bolt[0] + '%'); el.style.setProperty('--by', h.bolt[1] + '%');
+    el.style.setProperty('--rot', ((rnd(seed, 1) - .5) * 14).toFixed(1) + 'deg');
+    el.style.setProperty('--tr', ((rnd(seed, 2) - .5) * 6).toFixed(1) + 'deg');
+    const [bx] = h.bolt;
+    el.style.setProperty('--tx', bx > 60 ? '-14%' : bx < 40 ? '14%' : '0');
+    el.style.setProperty('--ty', bx >= 40 && bx <= 60 ? '-62%' : '0');
+    el.style.setProperty('--chalk', (.25 + rnd(seed, 3) * .6).toFixed(2));
+    if (el.dataset.mat === 'wood'){ el.style.setProperty('--c', 'var(--h-wood)'); el.style.setProperty('--grain', '.9'); el.style.setProperty('--chalk', '.15'); }
+    if (!el.querySelector(':scope > .bolt')) el.insertAdjacentHTML('beforeend', '<i class="bolt" aria-hidden="true"></i>');
+  }
+  const dressAll = root => root.querySelectorAll('.hold').forEach(el => dressHold(el, el.dataset.seed));
+
+  /* ---- holds library ---- */
+  const libColors = ['var(--yellow)','var(--orange)','var(--teal)','var(--h-blue)','var(--violet)','wood','var(--h-lime)','var(--pink)','var(--h-black)','var(--h-red)'];
+  $('#lib').innerHTML = Object.entries(SHAPES).map(([k, h], i) => {
+    const c = libColors[i % libColors.length];
+    return `<figure><div class="hold" ${c === 'wood' ? 'data-mat="wood"' : `style="--c:${c}"`} data-seed="lib${k}"><svg><use href="#h-${k}"/></svg></div>
+      <figcaption><b>${h.name}</b><small>${h.note}</small></figcaption></figure>`;
+  }).join('');
 
   /* ---- hand cursor (only for fine pointers) ---- */
   const hand = $('#hand');
@@ -307,6 +440,8 @@ body.calm .hero-holds,body.calm #rope{display:none}
   calmBtn.onclick = () => setCalm(!document.body.classList.contains('calm'));
   if (store.get('calm')) setCalm(true);
 
+  dressAll(document);
+
   /* ---- nav ---- */
   document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => $(b.dataset.go).scrollIntoView({behavior:'smooth'}));
 
@@ -331,9 +466,9 @@ body.calm .hero-holds,body.calm #rope{display:none}
 
   /* ---- schedule wall ---- */
   const kinds = {
-    mini:{name:'Мини 4–6', c:'var(--orange)', shape:'h-jug'},
-    incl:{name:'Инклюзивная', c:'var(--teal)', shape:'h-sloper'},
-    jun:{name:'Юниоры', c:'var(--yellow)', shape:'h-pinch'},
+    mini:{name:'Мини 4–6', c:'var(--orange)', pool:['jug','pocket','wave','sloper']},
+    incl:{name:'Инклюзивная', c:'var(--teal)', pool:['jug','sloper','edge','pocket']},
+    jun:{name:'Юниоры', c:'var(--yellow)', pool:['crimp','pinch','sidepull','foot','edge']},
   };
   const days = ['Пн 13','Вт 14','Ср 15','Чт 16','Пт 17'];
   const slots = [];
@@ -353,11 +488,12 @@ body.calm .hero-holds,body.calm #rope{display:none}
         const k = kinds[s.kind], free = s.cap - s.taken;
         const chalkDots = '●'.repeat(s.taken) + '○'.repeat(free);
         return `<div class="slot ${free === 0 && !s.mine ? 'full' : ''} ${s.mine ? 'mine' : ''}">
-          <button class="hold small" style="--c:${k.c}" data-slot="${s.id}" ${free === 0 && !s.mine ? 'aria-disabled="true"' : ''}
+          <button class="hold small" style="--c:${k.c}" data-slot="${s.id}" data-seed="slot${s.id}" ${free === 0 && !s.mine ? 'aria-disabled="true"' : ''}
             aria-label="${s.day}, ${s.time}, ${k.name}, свободно ${free} из ${s.cap}${s.mine ? ', ваша бронь ' + s.mine : ''}">
-            <svg><use href="#${k.shape}"/></svg><span>${s.time}</span></button>
+            <svg><use href="#h-${k.pool[Math.floor(rnd(s.id) * k.pool.length)]}"/></svg><span>${s.time}</span></button>
           <small class="chalk" aria-hidden="true">${chalkDots}</small></div>`;
       }).join('')}</div>`).join('');
+    dressAll(wall);
   }
   render();
 
