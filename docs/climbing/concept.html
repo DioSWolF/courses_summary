@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Зацеп — концепт</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800&family=Golos+Text:wght@400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ply:#E8D9BF; --ply-2:#DCC9A8; --ink:#1E1D1B; --muted:#6b6257;
+  --orange:#FF5A36; --teal:#2BB3A3; --yellow:#FFC23D; --violet:#7B5CFF; --pink:#FF7FB0;
+  --card:#FFF8EC;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:"Golos Text",system-ui,sans-serif; color:var(--ink); background:var(--ply);
+  background-image:
+    radial-gradient(circle at 20px 20px, rgba(30,29,27,.22) 3px, transparent 4px),
+    repeating-linear-gradient(90deg, rgba(120,90,50,.05) 0 2px, transparent 2px 9px);
+  background-size:80px 80px, 100% 100%;
+  overflow-x:hidden;
+}
+body.has-hand, body.has-hand *{cursor:none !important}
+h1,h2,h3{font-family:"Unbounded",sans-serif;margin:0;line-height:1.05}
+.hand-note{font-family:"Caveat",cursive;font-size:1.6rem;color:var(--orange)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+/* ---------- hand cursor ---------- */
+#hand{position:fixed;left:0;top:0;width:46px;height:46px;pointer-events:none;z-index:9999;
+  transform:translate(-50%,-30%);transition:transform .08s}
+#hand svg{width:100%;height:100%;filter:drop-shadow(2px 4px 0 rgba(0,0,0,.18))}
+#hand .grab{display:none}
+#hand.reach{transform:translate(-50%,-30%) rotate(-12deg) scale(1.08)}
+#hand.down .open{display:none} #hand.down .grab{display:block}
+#hand.down{transform:translate(-50%,-30%) scale(.92)}
+
+/* ---------- holds (buttons) ---------- */
+.hold{position:relative;border:0;background:none;padding:0;font:inherit;color:var(--ink);
+  display:inline-grid;place-items:center;min-width:120px;min-height:64px;isolation:isolate}
+.hold svg{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible;
+  transition:transform .35s cubic-bezier(.3,1.6,.5,1);transform-origin:50% 50%}
+.shape{fill:var(--c,var(--orange));stroke:rgba(0,0,0,.25);stroke-width:2}
+.bolt{fill:#2a2622}
+.bolt-ring{fill:none;stroke:rgba(255,255,255,.55);stroke-width:2}
+.hold span{font-weight:600;padding:0 34px 0 18px;font-size:.95rem;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.hold:hover svg,.hold:focus-visible svg{transform:rotate(-6deg) scale(1.05)}
+.hold:active svg{transform:scale(.9) rotate(4deg)}
+.hold:focus-visible{outline:3px dashed var(--ink);outline-offset:6px;border-radius:30px}
+.hold.small{min-width:84px;min-height:50px}
+.hold.small span{font-size:.85rem;padding:0 28px 0 12px}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:rgba(232,217,191,.75);
+  border-bottom:2px solid var(--ink)}
+header .wrap{display:flex;align-items:center;gap:12px;justify-content:space-between;min-height:76px}
+.logo{font-family:"Unbounded";font-weight:800;font-size:1.4rem;letter-spacing:-.02em}
+.logo b{color:var(--orange)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+@media (max-width:760px){nav .hold:not(.keep){display:none}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:88vh;display:grid;align-items:end;overflow:hidden;
+  border-bottom:2px solid var(--ink);color:#fff}
+.hero-bg{position:absolute;inset:0;background:
+  linear-gradient(160deg,#3b2f6b,#1E1D1B 55%,#5a2b1f);background-size:cover;background-position:center}
+.hero-bg.photo{filter:grayscale(1) contrast(1.1)}
+.hero-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,90,54,.25),rgba(30,29,27,.85));mix-blend-mode:multiply}
+.grain{position:absolute;inset:0;opacity:.18;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hero-in{position:relative;padding:80px 0 56px}
+.hero h1{font-size:clamp(2.4rem,7vw,5.6rem);font-weight:800;letter-spacing:-.03em;max-width:12ch}
+.hero h1 em{font-style:normal;color:var(--yellow);display:inline-block;transform:rotate(-3deg)}
+.hero p{max-width:46ch;font-size:1.15rem;opacity:.9}
+.hero .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.hero .hand-note{color:var(--yellow);position:absolute;right:52px;top:90px;transform:rotate(6deg)}
+.hero-holds{position:absolute;inset:0;pointer-events:none}
+.hero-holds i{position:absolute;width:56px;height:40px;border-radius:48% 52% 40% 60%/55% 45% 55% 45%;
+  background:var(--c);opacity:.85;animation:bob 6s ease-in-out infinite;box-shadow:inset -6px -6px 0 rgba(0,0,0,.2)}
+@keyframes bob{50%{transform:translateY(-10px) rotate(8deg)}}
+
+/* ---------- rope & climber ---------- */
+#rope{position:fixed;right:18px;top:90px;bottom:20px;width:4px;z-index:40;
+  background:repeating-linear-gradient(180deg,var(--orange) 0 8px,var(--ink) 8px 12px);border-radius:2px}
+#climber{position:absolute;left:50%;width:30px;height:30px;margin-left:-15px;font-size:24px;line-height:30px;
+  text-align:center;transition:top .2s}
+@media (max-width:760px){#rope{display:none}}
+
+section{padding:80px 0}
+.sec-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.sec-head h2{font-size:clamp(1.8rem,4vw,2.8rem)}
+
+/* ---------- schedule wall ---------- */
+.wall{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:14px;overflow-x:auto;padding-bottom:10px}
+.panel{background:var(--ply-2);border:2px solid var(--ink);border-radius:6px;padding:14px 10px 18px;
+  background-image:radial-gradient(circle,rgba(30,29,27,.35) 2px,transparent 3px);background-size:36px 36px;
+  min-height:360px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.panel h3{font-size:1rem;background:var(--ink);color:var(--ply);padding:6px 10px;border-radius:4px;align-self:stretch;text-align:center}
+.slot{width:100%}
+.slot .hold{width:100%}
+.slot small{display:block;text-align:center;font-size:.75rem;color:var(--muted);margin-top:2px}
+.chalk{letter-spacing:2px}
+.slot.full .hold{opacity:.4;filter:grayscale(.6)}
+.slot.mine .hold::after{content:"";position:absolute;right:6px;top:-6px;width:12px;height:30px;
+  background:var(--violet);border-radius:3px;transform:rotate(18deg)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;color:var(--muted);font-size:.9rem}
+.legend b{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px}
+
+/* ---------- booking sheet ---------- */
+dialog{border:2px solid var(--ink);border-radius:14px;background:var(--card);padding:26px;max-width:min(420px,92vw);
+  box-shadow:8px 8px 0 var(--ink)}
+dialog::backdrop{background:rgba(30,29,27,.5)}
+dialog h3{margin-bottom:6px}
+.seats{display:flex;align-items:center;gap:14px;margin:18px 0}
+.seats output{font-family:Unbounded;font-size:2rem;min-width:40px;text-align:center}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+/* ---------- viber toasts ---------- */
+#toasts{position:fixed;left:16px;bottom:16px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:340px}
+.toast{background:#7360F2;color:#fff;border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:.9rem;
+  box-shadow:4px 4px 0 var(--ink);animation:pop .4s cubic-bezier(.3,1.6,.5,1)}
+.toast b{display:block;font-size:.75rem;opacity:.8;margin-bottom:2px}
+@keyframes pop{from{transform:translateY(20px) scale(.8);opacity:0}}
+
+/* ---------- news board ---------- */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:26px}
+.note{position:relative;background:var(--card);border:2px solid var(--ink);padding:26px 18px 18px;border-radius:4px;
+  transform:rotate(var(--r));transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.note:hover{transform:rotate(0) translateY(-4px)}
+.note::before{content:"";position:absolute;top:-14px;left:50%;width:34px;height:26px;margin-left:-17px;
+  background:var(--c);border:2px solid var(--ink);border-radius:50% 45% 55% 40%/60% 50% 50% 40%}
+.note time{font-size:.8rem;color:var(--muted)}
+.note h3{font-size:1.05rem;margin:6px 0}
+
+/* ---------- locations ---------- */
+.locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.loc{border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--card)}
+.loc .pic{height:150px;background:linear-gradient(135deg,var(--c),var(--ink))}
+.loc div.t{padding:16px}
+
+/* ---------- gallery ---------- */
+.gal{columns:3 220px;column-gap:14px}
+.gal div{break-inside:avoid;margin-bottom:14px;border:2px solid var(--ink);border-radius:8px;background:var(--c);
+  height:var(--h);transition:transform .4s;transform-origin:top center}
+.gal div:hover{transform:rotate(-2deg) translateY(4px)}
+
+footer{border-top:2px solid var(--ink);padding:30px 0;color:var(--muted)}
+
+/* ---------- chalk particles ---------- */
+.puff{position:fixed;width:6px;height:6px;border-radius:50%;background:#fff;pointer-events:none;z-index:9998;
+  animation:puff .7s ease-out forwards}
+@keyframes puff{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+
+/* ---------- calm mode ---------- */
+body.calm *,body.calm *::before{animation:none !important;transition:none !important}
+body.calm .hero-holds,body.calm #rope{display:none}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="h-jug" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M14 52C6 24 40 6 96 8s96 8 90 40-40 38-92 36S20 78 14 52Z"/><circle class="bolt" cx="170" cy="44" r="7"/><circle class="bolt-ring" cx="170" cy="44" r="11"/></symbol>
+    <symbol id="h-crimp" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M6 60C10 34 60 22 110 20s88 4 84 30-36 32-96 32S2 84 6 60Z"/><circle class="bolt" cx="170" cy="50" r="7"/><circle class="bolt-ring" cx="170" cy="50" r="11"/></symbol>
+    <symbol id="h-sloper" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M20 70C-6 50 30 4 100 6c68 2 104 40 82 62s-60 20-90 18-58 2-72-16Z"/><circle class="bolt" cx="170" cy="40" r="7"/><circle class="bolt-ring" cx="170" cy="40" r="11"/></symbol>
+    <symbol id="h-pinch" viewBox="0 0 200 90" preserveAspectRatio="none"><path class="shape" d="M10 44C10 14 52 10 76 22s30 8 56-4 60-2 60 26-30 40-62 32-28-6-58 4S10 74 10 44Z"/><circle class="bolt" cx="170" cy="46" r="7"/><circle class="bolt-ring" cx="170" cy="46" r="11"/></symbol>
+  </defs>
+</svg>
+
+<div id="hand" aria-hidden="true">
+  <svg class="open" viewBox="0 0 64 64"><path fill="#FFE2C6" stroke="#1E1D1B" stroke-width="2.5" stroke-linejoin="round" d="M22 58c-6-4-12-14-14-22-1-4 4-6 6-2l4 7V12c0-4 6-4 6 0v18-22c0-4 6-4 6 0v22-18c0-4 6-4 6 0v20-14c0-4 6-4 6 0v26c0 10-4 16-10 18Z"/><path fill="#fff" opacity=".7" d="M30 50c3 1 7 0 9-3"/></svg>
+  <svg class="grab" viewBox="0 0 64 64"><path fill="#FFE2C6" stroke="#1E1D1B" stroke-width="2.5" stroke-linejoin="round" d="M18 56c-5-5-8-12-8-20 0-4 4-5 6-2l2 3v-9c0-4 6-4 6 0v-3c0-4 6-4 6 0v1c0-4 6-4 6 0v2c0-4 6-4 6 0v14c0 10-4 15-10 17Z"/><path fill="none" stroke="#1E1D1B" stroke-width="2" d="M24 30h18M24 36h18"/><circle cx="20" cy="20" r="2" fill="#fff"/><circle cx="46" cy="18" r="1.6" fill="#fff"/></svg>
+</div>
+
+<div id="rope" aria-hidden="true"><div id="climber">🧗</div></div>
+<div id="toasts" aria-live="polite"></div>
+
+<header>
+  <div class="wrap">
+    <div class="logo">за<b>цеп</b></div>
+    <nav aria-label="Главное меню">
+      <button class="hold small" style="--c:var(--yellow)" data-go="#schedule"><svg><use href="#h-jug"/></svg><span>Расписание</span></button>
+      <button class="hold small" style="--c:var(--teal)" data-go="#locations"><svg><use href="#h-pinch"/></svg><span>Локации</span></button>
+      <button class="hold small" style="--c:var(--pink)" data-go="#news"><svg><use href="#h-crimp"/></svg><span>Новости</span></button>
+      <button class="hold small" style="--c:var(--violet)" data-go="#gallery"><svg><use href="#h-sloper"/></svg><span>Галерея</span></button>
+      <button class="hold small keep" style="--c:var(--orange)" id="calmBtn" aria-pressed="false"><svg><use href="#h-sloper"/></svg><span>Спокойно</span></button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" style="padding:0">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-tint"></div>
+  <div class="grain"></div>
+  <div class="hero-holds">
+    <i style="--c:var(--orange);left:8%;top:18%"></i><i style="--c:var(--teal);left:72%;top:30%;animation-delay:-2s"></i>
+    <i style="--c:var(--yellow);left:56%;top:12%;animation-delay:-4s"></i><i style="--c:var(--pink);left:86%;top:62%;animation-delay:-1s"></i>
+  </div>
+  <span class="hand-note">↓ лезь ниже</span>
+  <div class="wrap hero-in">
+    <h1>Каждый ребёнок может <em>достать</em> до верха</h1>
+    <p>Скалолазание для детей 4–14 лет, в том числе с особенностями развития. Маленькие группы, внимательные тренеры, спокойный темп.</p>
+    <div class="actions">
+      <button class="hold" style="--c:var(--yellow)" data-go="#schedule"><svg><use href="#h-jug"/></svg><span>Забронировать место</span></button>
+      <label class="hold" style="--c:var(--teal)"><svg><use href="#h-pinch"/></svg><span>Своё фото на фон</span>
+        <input type="file" accept="image/*" id="bgInput" hidden></label>
+    </div>
+  </div>
+</section>
+
+<section id="schedule">
+  <div class="wrap">
+    <div class="sec-head"><h2>Стена расписания</h2><span class="hand-note">хватай свободную зацепку</span></div>
+    <div class="wall" id="wall"></div>
+    <div class="legend">
+      <span><b style="background:var(--orange)"></b>Мини (4–6)</span>
+      <span><b style="background:var(--teal)"></b>Инклюзивная группа</span>
+      <span><b style="background:var(--yellow)"></b>Юниоры (7–14)</span>
+      <span>●●○ — следы магнезии = занятые места</span>
+    </div>
+  </div>
+</section>
+
+<section id="news" style="background:rgba(30,29,27,.04)">
+  <div class="wrap">
+    <div class="sec-head"><h2>Доска объявлений</h2></div>
+    <div class="board">
+      <article class="note" style="--r:-2deg;--c:var(--orange)"><time>12 октября</time><h3>Новая инклюзивная группа по вторникам</h3><p>Максимум 4 ребёнка, тренер-эрготерапевт. Запись уже открыта.</p></article>
+      <article class="note" style="--r:1.5deg;--c:var(--teal)"><time>10 октября</time><h3>Первый «топ» Марка!</h3><p>После 6 занятий — вершина 6 метров. Гордимся.</p></article>
+      <article class="note" style="--r:-1deg;--c:var(--yellow)"><time>7 октября</time><h3>Хэллоуин на стене</h3><p>31.10 — костюмы, тыквенные зацепки, какао после занятия.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="locations">
+  <div class="wrap">
+    <div class="sec-head"><h2>Где мы лазаем</h2></div>
+    <div class="locs">
+      <div class="loc" style="--c:var(--violet)"><div class="pic"></div><div class="t"><h3>Скалодром «Север»</h3><p>ул. Примерная, 12 · пандус, сенсорная комната</p></div></div>
+      <div class="loc" style="--c:var(--orange)"><div class="pic"></div><div class="t"><h3>Боулдер-зал «Кубик»</h3><p>пр. Тестовый, 3 · низкие стены, мягкие маты</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <div class="sec-head"><h2>Галерея</h2></div>
+    <div class="gal">
+      <div style="--c:var(--teal);--h:220px"></div><div style="--c:var(--yellow);--h:160px"></div><div style="--c:var(--pink);--h:260px"></div>
+      <div style="--c:var(--orange);--h:180px"></div><div style="--c:var(--violet);--h:240px"></div><div style="--c:var(--ply-2);--h:150px"></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Концепт интерфейса · данные демонстрационные</div></footer>
+
+<dialog id="sheet">
+  <form method="dialog">
+    <h3 id="sheetTitle">Вт, 17:00</h3>
+    <p id="sheetSub" style="margin:0;color:var(--muted)"></p>
+    <div class="seats">
+      <button class="hold small" style="--c:var(--ply-2)" type="button" id="minus" aria-label="Меньше мест"><svg><use href="#h-crimp"/></svg><span>−</span></button>
+      <output id="seatOut">1</output>
+      <button class="hold small" style="--c:var(--ply-2)" type="button" id="plus" aria-label="Больше мест"><svg><use href="#h-crimp"/></svg><span>+</span></button>
+    </div>
+    <div class="row">
+      <button class="hold small" style="--c:var(--pink)" value="cancel" id="cancelBooking" hidden><svg><use href="#h-pinch"/></svg><span>Отменить бронь</span></button>
+      <button class="hold small" style="--c:var(--ply-2)" value="close"><svg><use href="#h-sloper"/></svg><span>Закрыть</span></button>
+      <button class="hold" style="--c:var(--yellow)" value="ok" id="okBtn"><svg><use href="#h-jug"/></svg><span>Забронировать</span></button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const store = { get(k){ try{return localStorage.getItem(k)}catch{return null} }, set(k,v){ try{localStorage.setItem(k,v)}catch{} } };
+
+  /* ---- hand cursor (only for fine pointers) ---- */
+  const hand = $('#hand');
+  const fine = matchMedia('(pointer:fine)').matches;
+  const enableHand = on => { document.body.classList.toggle('has-hand', on); hand.style.display = on ? '' : 'none'; };
+  enableHand(fine);
+  addEventListener('pointermove', e => {
+    hand.style.left = e.clientX + 'px'; hand.style.top = e.clientY + 'px';
+    hand.classList.toggle('reach', !!e.target.closest('button,label,a,.note'));
+  });
+  addEventListener('pointerdown', e => { hand.classList.add('down'); if (e.target.closest('button,label')) chalk(e.clientX, e.clientY); });
+  addEventListener('pointerup', () => hand.classList.remove('down'));
+
+  function chalk(x, y){
+    if (document.body.classList.contains('calm')) return;
+    for (let i = 0; i < 10; i++){
+      const p = document.createElement('i'); p.className = 'puff';
+      p.style.left = x + 'px'; p.style.top = y + 'px';
+      p.style.setProperty('--dx', (Math.random()*60-30) + 'px');
+      p.style.setProperty('--dy', (Math.random()*-50-5) + 'px');
+      document.body.appendChild(p); setTimeout(() => p.remove(), 700);
+    }
+  }
+
+  /* ---- calm mode ---- */
+  const calmBtn = $('#calmBtn');
+  const setCalm = on => { document.body.classList.toggle('calm', on); calmBtn.setAttribute('aria-pressed', on); enableHand(fine && !on); store.set('calm', on ? '1' : ''); };
+  calmBtn.onclick = () => setCalm(!document.body.classList.contains('calm'));
+  if (store.get('calm')) setCalm(true);
+
+  /* ---- nav ---- */
+  document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => $(b.dataset.go).scrollIntoView({behavior:'smooth'}));
+
+  /* ---- background photo ---- */
+  const heroBg = $('#heroBg');
+  const applyBg = url => { heroBg.style.backgroundImage = `url(${url})`; heroBg.classList.add('photo'); };
+  const savedBg = store.get('bg'); if (savedBg) applyBg(savedBg);
+  $('#bgInput').onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { applyBg(r.result); store.set('bg', r.result); toast('Сайт', 'Фон обновлён ✓'); };
+    r.readAsDataURL(f);
+  };
+
+  /* ---- rope climber ---- */
+  const climber = $('#climber'), rope = $('#rope');
+  addEventListener('scroll', () => {
+    const p = scrollY / (document.documentElement.scrollHeight - innerHeight || 1);
+    climber.style.top = ((1 - p) * (rope.clientHeight - 30)) + 'px';
+  }, {passive:true});
+  dispatchEvent(new Event('scroll'));
+
+  /* ---- schedule wall ---- */
+  const kinds = {
+    mini:{name:'Мини 4–6', c:'var(--orange)', shape:'h-jug'},
+    incl:{name:'Инклюзивная', c:'var(--teal)', shape:'h-sloper'},
+    jun:{name:'Юниоры', c:'var(--yellow)', shape:'h-pinch'},
+  };
+  const days = ['Пн 13','Вт 14','Ср 15','Чт 16','Пт 17'];
+  const slots = [];
+  const times = ['10:00','10:30','11:00','16:30','17:00','17:30'];
+  const kindKeys = Object.keys(kinds);
+  days.forEach((d, di) => times.forEach((t, ti) => {
+    if ((di + ti) % 3 === 2) return;
+    const kind = kindKeys[(di * 2 + ti) % 3];
+    const cap = kind === 'incl' ? 4 : 6;
+    slots.push({id:`${di}-${ti}`, day:d, time:t, kind, cap, taken:(di * 3 + ti * 5) % (cap + 1), mine:0});
+  }));
+
+  const wall = $('#wall');
+  function render(){
+    wall.innerHTML = days.map(d => `<div class="panel"><h3>${d}</h3>${
+      slots.filter(s => s.day === d).map(s => {
+        const k = kinds[s.kind], free = s.cap - s.taken;
+        const chalkDots = '●'.repeat(s.taken) + '○'.repeat(free);
+        return `<div class="slot ${free === 0 && !s.mine ? 'full' : ''} ${s.mine ? 'mine' : ''}">
+          <button class="hold small" style="--c:${k.c}" data-slot="${s.id}" ${free === 0 && !s.mine ? 'aria-disabled="true"' : ''}
+            aria-label="${s.day}, ${s.time}, ${k.name}, свободно ${free} из ${s.cap}${s.mine ? ', ваша бронь ' + s.mine : ''}">
+            <svg><use href="#${k.shape}"/></svg><span>${s.time}</span></button>
+          <small class="chalk" aria-hidden="true">${chalkDots}</small></div>`;
+      }).join('')}</div>`).join('');
+  }
+  render();
+
+  /* ---- booking sheet ---- */
+  const sheet = $('#sheet'); let cur = null, seats = 1;
+  wall.addEventListener('click', e => {
+    const b = e.target.closest('[data-slot]'); if (!b) return;
+    cur = slots.find(s => s.id === b.dataset.slot);
+    if (cur.cap - cur.taken === 0 && !cur.mine){ toast('Расписание', `${cur.day} ${cur.time}: мест нет — добавить в лист ожидания?`); return; }
+    seats = cur.mine || 1;
+    $('#sheetTitle').textContent = `${cur.day}, ${cur.time}`;
+    $('#sheetSub').textContent = `${kinds[cur.kind].name} · свободно ${cur.cap - cur.taken + cur.mine} из ${cur.cap}`;
+    $('#seatOut').textContent = seats;
+    $('#cancelBooking').hidden = !cur.mine;
+    $('#okBtn span').textContent = cur.mine ? 'Сохранить' : 'Забронировать';
+    sheet.showModal();
+  });
+  const maxSeats = () => cur.cap - cur.taken + cur.mine;
+  $('#plus').onclick = () => { seats = Math.min(maxSeats(), seats + 1); $('#seatOut').textContent = seats; };
+  $('#minus').onclick = () => { seats = Math.max(1, seats - 1); $('#seatOut').textContent = seats; };
+
+  sheet.addEventListener('close', () => {
+    const v = sheet.returnValue, label = `${cur.day} ${cur.time}`;
+    if (v === 'ok'){
+      const before = cur.mine;
+      cur.taken += seats - before; cur.mine = seats;
+      const left = cur.cap - cur.taken;
+      if (!before) toast('Viber · группа', `Вы забронировали ${seats} мест${seats === 1 ? 'о' : 'а'} на ${label} (свободно ${left})`);
+      else if (seats < before) toast('Viber · группа', `Вы освободили ${before - seats} мест${before - seats === 1 ? 'о' : 'а'} на ${label} (свободно ${left})`);
+      else if (seats > before) toast('Viber · группа', `Вы добавили ${seats - before} мест${seats - before === 1 ? 'о' : 'а'} на ${label} (свободно ${left})`);
+    } else if (v === 'cancel'){
+      cur.taken -= cur.mine; cur.mine = 0;
+      toast('Viber · группа', `Бронь на ${label} отменена (свободно ${cur.cap - cur.taken})`);
+    }
+    render();
+  });
+
+  function toast(from, text){
+    const t = document.createElement('div'); t.className = 'toast';
+    t.innerHTML = `<b>${from}</b>`; t.append(text);
+    $('#toasts').appendChild(t); setTimeout(() => t.remove(), 4200);
+  }
+})();
+</script>
+</body>
+</html>
