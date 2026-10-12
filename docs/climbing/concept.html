@@ -502,7 +502,7 @@ body.calm .hero-holds,body.calm #rope{display:none}
   wall.addEventListener('click', e => {
     const b = e.target.closest('[data-slot]'); if (!b) return;
     cur = slots.find(s => s.id === b.dataset.slot);
-    if (cur.cap - cur.taken === 0 && !cur.mine){ toast('Расписание', `${cur.day} ${cur.time}: мест нет — добавить в лист ожидания?`); return; }
+    if (cur.cap - cur.taken === 0 && !cur.mine){ toast('Расписание', `${cur.day} ${cur.time}: мест нет`); return; }
     seats = cur.mine || 1;
     $('#sheetTitle').textContent = `${cur.day}, ${cur.time}`;
     $('#sheetSub').textContent = `${kinds[cur.kind].name} · свободно ${cur.cap - cur.taken + cur.mine} из ${cur.cap}`;
